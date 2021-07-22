@@ -9,9 +9,12 @@ import { User } from '../model/user';
 
 @Injectable()
 export class LoginService extends GenericService<User> {
+  login(cpf: any) {
+    throw new Error('Method not implemented.');
+  }
 
-  path = 'api/oauth2/v1/token';
-  
+  path = 'token';
+
   constructor(http: HttpClient, private storage: PoStorageService) {
     super(http);
   }

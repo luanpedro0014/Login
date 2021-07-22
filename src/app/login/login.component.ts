@@ -9,6 +9,7 @@ import { LoginService } from './login.service';
 
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { environment } from 'src/environments/environment'
+import { Validators } from '@angular/forms';
 
 @Component({
   selector: 'app-login',
@@ -18,22 +19,30 @@ import { environment } from 'src/environments/environment'
 export class LoginComponent {
 
   hideRememberUser: boolean = true;
+  loginForm: any;
+  fb: any;
 
   constructor(
     private loginService: LoginService,
     private router: Router,
-    private httpClient: HttpClient, 
+    private httpClient: HttpClient,
     private storage: PoStorageService,
     private poNotification: PoNotificationService) { }
 
   loginSubmit(formData: PoPageLogin) {
 
-    var url = environment.api + 
-              'api/oauth2/v1/token?grant_type=password&password=' + formData.password + 
-              '&username=' + formData.login;
+    // var url = environment.api + 'token';
+    var url ='http://localhost:3000/login'
     var body: any;
+    var header: HttpHeaders;
 
-    this.httpClient.post(url, body).subscribe((res) => {
+/*
+    Chamada TOTVS
+
+    header = new HttpHeaders().set('Authorization', 'Basic TVBrRVE1ZFJHZzFkSkxHcTlDM05mSFQxa21nYTpHSFBFamZwaXJYbEVvTjBmbWRndGhqaUk3ZWth');
+    header.append('Content-Type', 'application/x-www-form-urlencoded')
+
+    this.httpClient.post(url, body, { headers: header } ).subscribe((res) => {
       this.storage.set('isLoggedIn', 'true').then(() => {
         localStorage.setItem('access_token', res["access_token"])
         this.router.navigate(['/']);
@@ -42,7 +51,25 @@ export class LoginComponent {
       if ((! res.hasOwnProperty('access_token')))
         { this.poNotification.error('Usuário ou senha invalidos ! Tente novamente.') };
     });
+*/
+
+    var body: any;
+    body = '{       "email":"luanpedro@gmail.com", "password":"silva" }'
+    header = new HttpHeaders().set('Content-Type', 'application/json');
+
+    this.httpClient.post(url, body, { headers: header } ).subscribe((res) => {
+      this.storage.set('isLoggedIn', 'true').then(() => {
+        this.router.navigate(['/']);
+      });
+    }, (res) => {
+      if ((! res.hasOwnProperty('access_token')))
+        { this.poNotification.error('Usuário ou senha invalidos ! Tente novamente.') };
+    });
+
 
   }
 
 }
+
+
+
